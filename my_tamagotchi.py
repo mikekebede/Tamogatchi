@@ -1,80 +1,87 @@
-import turtle
-import time
 import random
-class Pet:
-    def __init__(self, name:str):
-        """creates a pet with a given name"""
-        self.name=name
-        self.fullness=8
-        self.happiness=8
-        self.cleanliness=8
-        self.alive=True
-        self.stage_list=["egg", "baby", "child", "adult"] #creates a list of all age groups
-        self.stageindex=0  #initializes the stage to "egg"
-        self.stage=self.stage_list[0]
-        self.progress=1
+import time
+import turtle
 
-    def feed(self):
-        """increases the fullness of the pet by feeding it"""
-        self.fullness+=2
-        if self.fullness>=10:
-            self.fullness=10 #sets the maximum of fullness to 10
-            self.cleanliness-=2
-        if self.cleanliness<1:
-            self.cleanliness=1  #sets the minimum of cleanliness to 1
-            
-    def play(self):
-        """increases the happiness of the pet by playing with it"""
-        self.happiness+=2
-        if self.happiness>=10:
-            self.happiness=10  #sets the maximum of happiness to 10
-            self.fullness-=2
-        if self.fullness<1:
-            self.fullness=1   #sets the minimum of fullness to 1
-            
-                 
-    def bathe(self):
-        """increases the cleanliness of the pet by bathing it"""
-        self.cleanliness+=3
-        if self.cleanliness>10:
-            self.cleanliness=10 #sets the maximum of cleanliness to 10
-            self.happiness-=2
-        if self.happiness<1:
-            self.happiness=1  #sets the minimum of fullness to 1
-    def age_up(self)->None:
-        """increases the age of the pet by 1"""
-        self.stageindex=self.stageindex+1 
-        self.stage=self.stage_list[self.stageindex]
-        self.progress=1 #sets the progress back to 1
-    def status(self)->str:
-        """tells if the pet is fine, dead or in distress"""
-        if self.fullness>5 and self.happiness>5 and self.cleanliness>5:
+class Pet:    
+    def __init__(self, input_name: str) -> None:
+        """Constructor for the Pet class"""
+        self.name = input_name
+        self.fullness = 8
+        self.happiness = 8
+        self.cleanliness = 8
+        self.alive = True
+        self.stage = "egg"
+        self.progress = 1
+
+    def feed(self) -> None:
+        """Feed the pet"""
+        if self.fullness <= 7:
+            self.fullness += 3
+        elif self.fullness < 10:
+            self.fullness = 10
+        elif self.fullness == 10:
+            if self.cleanliness >= 3: 
+                self.cleanliness -= 2
+            else: # if cleanliness is < 3, then decreasing it by 2 will yield a value < 1
+                self.cleanliness = 1 # thus, we must correct it
+
+    def play(self) -> None:
+        """Play with the pet"""
+        if self.happiness <= 7:
+            self.happiness += 3
+        elif self.happiness < 10:
+            self.happiness = 10
+        elif self.happiness == 10:
+            if self.fullness >= 3:
+                self.fullness -= 2
+            else: # if fullness is < 3, then decreasing it by 2 will yield a value < 1
+                self.fullness = 1 # thus, we must correct it
+
+    def bathe(self) -> None:
+        """Bathe the pet"""
+        if self.cleanliness <= 7:
+            self.cleanliness += 3
+        elif self.cleanliness < 10:
+            self.cleanliness = 10
+        elif self.cleanliness == 10:
+            if self.happiness >= 3:
+                self.happiness -= 2
+            else: # if happiness is < 3, then decreasing it by 2 will yield a value < 1
+                self.happiness = 1 # thus, we must correct it
+
+    def age_up(self) -> None:
+        """Age up the pet"""
+        stage_list = ["egg", "baby", "child", "adult"]
+        self.stage = stage_list[stage_list.index(self.stage) + 1]
+        self.progress = 1
+
+    def status(self) -> str:
+        """Show the status of the pet"""
+        if self.fullness > 5 and self.happiness > 5 and self.cleanliness > 5:
             return "fine"
-        if self.fullness==1 or self.cleanliness==1 or self.happiness==1:
-            self.alive=False
+        elif self.fullness == 1 or self.happiness == 1 or self.cleanliness == 1:
+            self.alive = False
             return "dead"
-        if self.fullness<=5 or self.cleanliness<=5 or self.happiness<=5:
-            return "distress"
-        
-        
-    def time_step(self):
-        """randomly decreases the happiness, cleanliness or fullness by 1 and returns the status """
-        import random
-        condition=random.choice(["happiness","fullness","cleanliness"])
-        if condition=="fullness":
-            self.fullness-=1
-        elif condition=="happiness":
-            self.happiness-=1
         else:
-            self.cleanliness-=1
+            return "distress"
 
+    def time_step(self) -> str:
+        """Time step the pet"""
+        choice = random.choice(["fullness", "happiness", "cleanliness"])
+        if choice == "fullness":
+            self.fullness -= 1
+        elif choice == "happiness":
+            self.happiness -= 1
+        elif choice == "cleanliness":
+            self.cleanliness -= 1
+
+        
         if self.progress <= 19:
             self.progress += 1
         elif self.progress == 20:
             self.age_up()
 
-        return self.status()    
-
+        return self.status()
 
 def fill_circle(turtle, color, radius, position):
         turtle.up()
@@ -228,17 +235,12 @@ class TamagotchiGame:
         self.draw_tombstone()
         turtle.exitonclick()
         
-def play_tamagotchi():
-    """prompts the user to input the namw of the pet to play the game"""
-    player=input("What would you like to name yout Tamagotchi?")
-    tamagotchi=TamagotchiGame(player)
+def play_tamagotchi() -> None:
+    """Run the Tamagotchi game"""
+    name = input("What would you wlike to name your Tamagotchi? ")
+    tamagotchi = TamagotchiGame(name)
     tamagotchi.run()
-    
-    
-            
-            
             
         
-            
-            
+        
         
